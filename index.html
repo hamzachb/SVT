@@ -3,21 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Saint-Valentin 💘</title>
+  <title>Saint-Valentin</title>
   <style>
     :root{
-      --bg1:#ffdde1;
-      --bg2:#ee9ca7;
+      --bg1:#ffd6dc;
+      --bg2:#f2a7b5;
       --card:#ffffffcc;
-      --text:#1f1f1f;
-      --accent:#ff3b6b;
+      --text:#151515;
+      --muted:#3a3a3a;
+      --accent:#ff2f62;
+      --accent2:#ff7aa0;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       min-height:100vh;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(circle at 20% 10%, var(--bg1), var(--bg2));
+      background:
+        radial-gradient(1200px 600px at 20% 10%, var(--bg1), transparent 60%),
+        radial-gradient(1200px 700px at 80% 90%, var(--bg2), transparent 55%),
+        linear-gradient(135deg, #ffe6ea 0%, #f0a7b5 100%);
       color:var(--text);
       display:flex;
       align-items:center;
@@ -25,145 +30,301 @@
       padding:24px;
       overflow:hidden;
     }
-    .hearts{
-      position:fixed; inset:0; pointer-events:none; opacity:.25;
-      background-image:
-        radial-gradient(circle at 10% 20%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 70% 30%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 30% 80%, #fff 0 2px, transparent 3px),
-        radial-gradient(circle at 90% 70%, #fff 0 2px, transparent 3px);
-      filter: blur(.2px);
-      animation: float 6s ease-in-out infinite alternate;
-    }
-    @keyframes float{from{transform:translateY(0)}to{transform:translateY(-12px)}}
 
-    .card{
-      width:min(720px, 100%);
-      background:var(--card);
-      border:1px solid #ffffff80;
-      border-radius:22px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.15);
-      padding:28px;
-      backdrop-filter: blur(8px);
+    .noise{
+      position:fixed; inset:-20%;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,.55) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 30%, rgba(255,255,255,.45) 0 2px, transparent 3px),
+        radial-gradient(circle at 30% 80%, rgba(255,255,255,.45) 0 2px, transparent 3px),
+        radial-gradient(circle at 90% 70%, rgba(255,255,255,.35) 0 2px, transparent 3px);
+      filter: blur(.2px);
+      opacity:.35;
+      pointer-events:none;
+      animation: drift 7s ease-in-out infinite alternate;
+      transform: translate3d(0,0,0);
+    }
+    @keyframes drift{
+      from{transform:translate3d(0,0,0)}
+      to{transform:translate3d(0,-14px,0)}
+    }
+
+    .stage{
+      perspective: 1200px;
+      width: min(780px, 100%);
       position:relative;
     }
+
+    .card{
+      width:100%;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.55);
+      border-radius:24px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.18);
+      padding:28px;
+      backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+      will-change: transform;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute; inset:-40%;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%),
+        rgba(255,255,255,.55), transparent 55%);
+      opacity:.55;
+      transform: translateZ(-10px);
+      pointer-events:none;
+    }
+
     .title{
-      font-size: clamp(26px, 3.4vw, 40px);
+      font-size: clamp(26px, 3.4vw, 44px);
       margin:0 0 8px;
-      letter-spacing:-.5px;
+      letter-spacing:-.8px;
+      transform: translateZ(30px);
     }
     .subtitle{
       margin:0 0 18px;
       font-size: clamp(14px, 2vw, 18px);
-      opacity:.85;
-      line-height:1.4;
+      opacity:.86;
+      line-height:1.45;
+      transform: translateZ(22px);
+      color: var(--muted);
     }
-    .progress{
-      height:10px;
-      background:#ffffff80;
-      border-radius:999px;
-      overflow:hidden;
-      margin: 10px 0 22px;
-    }
-    .bar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, var(--accent), #ffb3c7);
-      border-radius:999px;
-      transition: width .35s ease;
-    }
-    .q{
-      font-size: clamp(18px, 2.4vw, 24px);
-      margin: 10px 0 18px;
-      line-height:1.25;
-    }
-    .choices{
-      display:grid;
-      gap:12px;
-      grid-template-columns: 1fr;
-      margin-bottom: 18px;
-    }
-    button{
-      border:0;
-      border-radius:14px;
-      padding:14px 16px;
-      font-size:16px;
-      cursor:pointer;
-      transition: transform .08s ease, filter .2s ease;
-    }
-    button:active{transform: scale(.98)}
-    .btn{
-      background:#fff;
-      border:1px solid #00000010;
-      text-align:left;
-    }
-    .btn:hover{filter:brightness(.98)}
-    .primary{
-      background: var(--accent);
-      color:white;
-      font-weight:700;
-      text-align:center;
-    }
+
     .row{
       display:flex;
       gap:12px;
       flex-wrap:wrap;
       align-items:center;
       justify-content:space-between;
+      transform: translateZ(18px);
     }
     .pill{
-      background:#ffffff90;
-      border:1px solid #00000010;
+      background:rgba(255,255,255,.75);
+      border:1px solid rgba(0,0,0,.06);
       padding:8px 12px;
       border-radius:999px;
       font-size:13px;
       opacity:.9;
     }
+
+    .progress{
+      height:10px;
+      background:rgba(255,255,255,.65);
+      border-radius:999px;
+      overflow:hidden;
+      margin: 12px 0 22px;
+      transform: translateZ(14px);
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+
+    .q{
+      font-size: clamp(18px, 2.4vw, 26px);
+      margin: 10px 0 18px;
+      line-height:1.25;
+      transform: translateZ(24px);
+    }
+
+    .choices{
+      display:grid;
+      gap:12px;
+      grid-template-columns: 1fr;
+      margin-bottom: 10px;
+      transform: translateZ(20px);
+    }
+
+    button{
+      border:0;
+      border-radius:16px;
+      padding:14px 16px;
+      font-size:16px;
+      cursor:pointer;
+      transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+      font-weight:650;
+    }
+    button:active{transform: scale(.985)}
+    .btn{
+      background:#fff;
+      border:1px solid rgba(0,0,0,.07);
+      text-align:left;
+      box-shadow: 0 10px 20px rgba(0,0,0,.06);
+    }
+    .btn:hover{filter:brightness(.985); box-shadow: 0 14px 28px rgba(0,0,0,.08);}
+
+    .primary{
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color:white;
+      text-align:center;
+      box-shadow: 0 14px 34px rgba(255,47,98,.25);
+      font-weight:800;
+    }
+
     .note{
       font-size:13px;
-      opacity:.75;
-      margin-top:10px;
+      opacity:.72;
+      margin-top:8px;
       line-height:1.35;
+      transform: translateZ(14px);
+      color: var(--muted);
     }
-    .final-area{
-      position:relative;
+
+    /* Peluche coeur (illusion 3D) */
+    .plushWrap{
+      position:absolute;
+      right:-14px;
+      top:-18px;
+      width:170px;
       height:170px;
-      margin-top:10px;
-      border-radius:18px;
-      background:#ffffff70;
-      border:1px dashed #ffffffcc;
-      overflow:hidden;
+      transform-style: preserve-3d;
+      pointer-events:none;
+      filter: drop-shadow(0 28px 35px rgba(0,0,0,.16));
+    }
+    .plush{
+      position:absolute; inset:0;
+      border-radius: 42% 58% 55% 45% / 50% 45% 55% 50%;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), transparent 45%),
+        radial-gradient(circle at 70% 65%, rgba(0,0,0,.10), transparent 55%),
+        linear-gradient(135deg, #ff2f62 0%, #ff7aa0 100%);
+      transform: translateZ(40px);
+      animation: floaty 4.8s ease-in-out infinite;
+    }
+    .plush::before, .plush::after{
+      content:"";
+      position:absolute;
+      width:66px; height:66px;
+      border-radius:999px;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.8), transparent 50%),
+        linear-gradient(135deg, #ff3a6b 0%, #ff95b2 100%);
+      opacity:.95;
+      transform: translateZ(30px);
+    }
+    .plush::before{ left:-18px; top:58px; }
+    .plush::after{ right:-18px; top:58px; }
+
+    .snout{
+      position:absolute;
+      left:50%; top:72px;
+      width:64px; height:46px;
+      border-radius: 999px;
+      transform: translate(-50%,0) translateZ(55px);
+      background: rgba(255,255,255,.70);
+      box-shadow: inset 0 -8px 14px rgba(0,0,0,.06);
+      opacity:.95;
+    }
+    .eye{
+      position:absolute;
+      top:86px;
+      width:9px; height:9px;
+      border-radius:999px;
+      background: rgba(0,0,0,.5);
+      transform: translateZ(60px);
+    }
+    .eye.left{ left:70px; }
+    .eye.right{ left:92px; }
+    .smile{
+      position:absolute;
+      left:50%; top:97px;
+      width:26px; height:14px;
+      border:2px solid rgba(0,0,0,.35);
+      border-top:0;
+      border-left:0;
+      border-right:0;
+      border-radius: 0 0 999px 999px;
+      transform: translate(-50%,0) translateZ(60px);
+      opacity:.8;
+    }
+
+    @keyframes floaty{
+      0%,100%{ transform: translate3d(0,0,40px) rotateZ(-2deg); }
+      50%{ transform: translate3d(0,10px,40px) rotateZ(2deg); }
+    }
+
+    /* écran "énigme" entre questions */
+    .riddle{
+      padding: 8px 0 0;
       display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:flex-start;
+    }
+    .riddleBox{
+      width:100%;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.07);
+    }
+    .riddleTitle{
+      margin:0 0 6px;
+      font-size: 16px;
+      font-weight: 850;
+      letter-spacing:-.3px;
+    }
+    .riddleText{
+      margin:0;
+      opacity:.85;
+      line-height:1.4;
+      color: var(--muted);
+    }
+    .riddleHint{
+      margin:10px 0 0;
+      font-size: 13px;
+      opacity:.75;
+    }
+
+    /* Final minimal */
+    .finalWrap{
+      padding: 34px 10px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
       align-items:center;
       justify-content:center;
-      flex-direction:column;
-      gap:14px;
-      padding:16px;
     }
-    .final-buttons{
+    .bigAsk{
+      font-size: clamp(34px, 5vw, 62px);
+      letter-spacing: -1.2px;
+      line-height: 1.03;
+      text-align:center;
+      margin: 0;
+      transform: translateZ(34px);
+    }
+    .finalButtons{
       display:flex;
       gap:14px;
       flex-wrap:wrap;
       justify-content:center;
       width:100%;
+      transform: translateZ(22px);
     }
     .yes{
-      min-width: 190px;
-      background: linear-gradient(90deg, #ff3b6b, #ff7aa2);
+      min-width: 210px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
       color:white;
-      font-weight:800;
+      font-weight:900;
+      box-shadow: 0 18px 42px rgba(255,47,98,.28);
     }
     .no{
-      min-width: 190px;
+      min-width: 210px;
       background:#fff;
-      border:1px solid #00000012;
-      font-weight:700;
-      position:absolute;
-      left: 60%;
-      top: 55%;
-      transform: translate(-50%,-50%);
-      user-select:none;
+      border:1px solid rgba(0,0,0,.08);
+      font-weight:900;
+      position:relative;
+      box-shadow: 0 12px 26px rgba(0,0,0,.08);
     }
+
     .toast{
       position:fixed;
       left:50%;
@@ -177,84 +338,361 @@
       opacity:0;
       pointer-events:none;
       transition: opacity .25s ease, transform .25s ease;
+      z-index:5;
     }
     .toast.show{
       opacity:1;
       transform:translateX(-50%) translateY(-6px);
     }
+
+    /* ===== FINAL 3D SCENE ===== */
+    .celebrate{
+      position: relative;
+      min-height: 520px;
+      padding: 22px 10px 6px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
+      transform-style: preserve-3d;
+    }
+    .finalTitle{
+      font-size: clamp(36px, 5.2vw, 70px);
+      letter-spacing: -1.4px;
+      line-height: 1.02;
+      text-align:center;
+      margin: 0;
+      transform: translateZ(35px);
+    }
+    .finalSub{
+      margin: 0;
+      opacity: .8;
+      text-align:center;
+      transform: translateZ(22px);
+      max-width: 44ch;
+      color: var(--muted);
+    }
+    .scene3d{
+      width: min(640px, 100%);
+      height: 330px;
+      position: relative;
+      perspective: 1100px;
+      transform-style: preserve-3d;
+    }
+    .rig{
+      position:absolute; inset:0;
+      transform-style: preserve-3d;
+      animation: rigSpin 7.5s ease-in-out infinite alternate;
+    }
+    @keyframes rigSpin{
+      from{ transform: rotateX(8deg) rotateY(-12deg) translateZ(0); }
+      to{ transform: rotateX(-8deg) rotateY(14deg) translateZ(0); }
+    }
+
+    .heart3d{
+      position:absolute;
+      left:50%;
+      top:52%;
+      width: 160px;
+      height: 160px;
+      transform: translate(-50%,-50%) translateZ(60px) rotateZ(45deg);
+      transform-style: preserve-3d;
+      animation: heartPulse 1.6s ease-in-out infinite;
+      filter: drop-shadow(0 28px 40px rgba(0,0,0,.18));
+    }
+    @keyframes heartPulse{
+      0%,100%{ transform: translate(-50%,-50%) translateZ(60px) rotateZ(45deg) scale(1); }
+      50%{ transform: translate(-50%,-50%) translateZ(72px) rotateZ(45deg) scale(1.06); }
+    }
+    .heart3d .core{
+      position:absolute; inset:0;
+      background: linear-gradient(135deg, #ff2f62, #ff7aa0);
+      border-radius: 20px;
+      box-shadow: inset 0 -18px 30px rgba(0,0,0,.12);
+      transform: translateZ(14px);
+    }
+    .heart3d .core::before,
+    .heart3d .core::after{
+      content:"";
+      position:absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 999px;
+      background: inherit;
+    }
+    .heart3d .core::before{ left:-80px; top:0; }
+    .heart3d .core::after{ left:0; top:-80px; }
+
+    .heart3d .depth{
+      position:absolute; inset:0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(0,0,0,.08), rgba(0,0,0,.16));
+      transform: translateZ(0px);
+      filter: blur(.2px);
+      opacity:.45;
+    }
+    .heartText{
+      position:absolute;
+      left:50%;
+      top:13%;
+      transform: translateX(-50%) translateZ(75px);
+      font-weight: 950;
+      font-size: clamp(26px, 3.6vw, 44px);
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ff2f62, #ff7aa0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 12px 20px rgba(0,0,0,.12));
+    }
+
+    .flower3d{
+      position:absolute;
+      left: 18%;
+      top: 56%;
+      transform: translate(-50%,-50%) translateZ(35px);
+      transform-style: preserve-3d;
+      animation: floatA 3.6s ease-in-out infinite;
+      filter: drop-shadow(0 22px 30px rgba(0,0,0,.16));
+    }
+    @keyframes floatA{
+      0%,100%{ transform: translate(-50%,-50%) translateZ(35px) rotateZ(-4deg); }
+      50%{ transform: translate(-50%,-56%) translateZ(48px) rotateZ(4deg); }
+    }
+    .flower3d .stem{
+      position:absolute;
+      left:50%; top:54px;
+      width: 12px; height: 160px;
+      transform: translateX(-50%) translateZ(8px);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #2fd07b, #0c8f4a);
+      box-shadow: inset 0 -10px 16px rgba(0,0,0,.18);
+    }
+    .flower3d .leaf{
+      position:absolute;
+      left:50%; top:118px;
+      width: 80px; height: 42px;
+      border-radius: 999px 999px 999px 10px;
+      background: linear-gradient(135deg, #2fd07b, #0c8f4a);
+      transform-origin: left center;
+      box-shadow: inset 0 -10px 16px rgba(0,0,0,.16);
+    }
+    .flower3d .leaf.l1{ transform: translateX(-10px) rotateZ(-22deg) translateZ(10px); }
+    .flower3d .leaf.l2{ transform: translateX(-70px) rotateY(180deg) rotateZ(-12deg) translateZ(6px); opacity:.95; }
+
+    .flower3d .head{
+      position:absolute;
+      left:50%; top:0;
+      width: 130px; height: 130px;
+      transform: translateX(-50%) translateZ(26px);
+      transform-style: preserve-3d;
+    }
+    .flower3d .petal{
+      position:absolute;
+      left:50%; top:50%;
+      width: 62px; height: 92px;
+      border-radius: 999px;
+      transform-origin: center 82%;
+      background: linear-gradient(135deg, #fff, #ffd1db);
+      box-shadow: inset 0 -14px 18px rgba(0,0,0,.12);
+      filter: saturate(1.05);
+    }
+    .flower3d .petal:nth-child(1){ transform: translate(-50%,-50%) rotateZ(0deg)   translateY(-28px) translateZ(0px); }
+    .flower3d .petal:nth-child(2){ transform: translate(-50%,-50%) rotateZ(45deg)  translateY(-28px) translateZ(2px); }
+    .flower3d .petal:nth-child(3){ transform: translate(-50%,-50%) rotateZ(90deg)  translateY(-28px) translateZ(0px); }
+    .flower3d .petal:nth-child(4){ transform: translate(-50%,-50%) rotateZ(135deg) translateY(-28px) translateZ(2px); }
+    .flower3d .petal:nth-child(5){ transform: translate(-50%,-50%) rotateZ(180deg) translateY(-28px) translateZ(0px); }
+    .flower3d .petal:nth-child(6){ transform: translate(-50%,-50%) rotateZ(225deg) translateY(-28px) translateZ(2px); }
+    .flower3d .petal:nth-child(7){ transform: translate(-50%,-50%) rotateZ(270deg) translateY(-28px) translateZ(0px); }
+    .flower3d .petal:nth-child(8){ transform: translate(-50%,-50%) rotateZ(315deg) translateY(-28px) translateZ(2px); }
+
+    .flower3d .center{
+      position:absolute;
+      left:50%; top:50%;
+      width: 56px; height: 56px;
+      border-radius: 999px;
+      transform: translate(-50%,-50%) translateZ(12px);
+      background: radial-gradient(circle at 30% 30%, #fff6a6, #ffcc3a);
+      box-shadow: inset 0 -12px 18px rgba(0,0,0,.16);
+    }
+
+    .choco3d{
+      position:absolute;
+      left: 82%;
+      top: 58%;
+      width: 170px;
+      height: 120px;
+      transform: translate(-50%,-50%) translateZ(30px) rotateZ(8deg);
+      transform-style: preserve-3d;
+      animation: floatB 3.9s ease-in-out infinite;
+      filter: drop-shadow(0 22px 30px rgba(0,0,0,.16));
+    }
+    @keyframes floatB{
+      0%,100%{ transform: translate(-50%,-50%) translateZ(30px) rotateZ(8deg); }
+      50%{ transform: translate(-50%,-56%) translateZ(46px) rotateZ(-6deg); }
+    }
+    .choco3d .bar{
+      position:absolute; inset:0;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #4a2418, #8b4a2d);
+      box-shadow: inset 0 -18px 26px rgba(0,0,0,.22);
+      transform: translateZ(10px);
+    }
+    .choco3d .grid{
+      position:absolute; inset:12px;
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      transform: translateZ(18px);
+    }
+    .choco3d .sq{
+      border-radius: 12px;
+      background: linear-gradient(135deg, #5a2d1e, #a05a3b);
+      box-shadow: inset 0 -10px 16px rgba(0,0,0,.22);
+    }
+    .choco3d .wrap{
+      position:absolute;
+      left:-16px; top:8px;
+      width: 54px; height: 104px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,255,255,.7), rgba(255,255,255,.2));
+      transform: translateZ(4px) rotateZ(-8deg);
+      opacity:.55;
+    }
+
+    .spark{
+      position:absolute;
+      width:10px; height:10px;
+      border-radius:999px;
+      background: rgba(255,255,255,.85);
+      filter: blur(.2px);
+      opacity:.85;
+      animation: spark 2.8s ease-in-out infinite;
+    }
+    @keyframes spark{
+      0%,100%{ transform: translate3d(0,0,0) scale(1); opacity:.6; }
+      50%{ transform: translate3d(0,-18px,0) scale(1.25); opacity:1; }
+    }
   </style>
 </head>
 <body>
-  <div class="hearts"></div>
+  <div class="noise"></div>
 
-  <div class="card" id="card">
-    <h1 class="title" id="title">Mini jeu de couple 💘</h1>
-    <p class="subtitle" id="subtitle">
-      J’ai préparé 5 questions sur nous. Si tu fais un bon score… tu débloques la vraie surprise 😇
-    </p>
+  <div class="stage" id="stage">
+    <div class="card" id="card">
+      <div class="plushWrap" id="plushWrap" aria-hidden="true">
+        <div class="plush" id="plush"></div>
+        <div class="snout"></div>
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="smile"></div>
+      </div>
 
-    <div class="row">
-      <div class="pill" id="pill">Question 1 / 5</div>
-      <div class="pill" id="scorePill">Score : 0</div>
-    </div>
+      <h1 class="title" id="title">…</h1>
+      <p class="subtitle" id="subtitle">…</p>
 
-    <div class="progress" aria-label="progression">
-      <div class="bar" id="bar"></div>
-    </div>
+      <div class="row">
+        <div class="pill" id="pill">—</div>
+        <div class="pill" id="scorePill">Score : 0</div>
+      </div>
 
-    <div class="q" id="q"></div>
-    <div class="choices" id="choices"></div>
+      <div class="progress" aria-label="progression">
+        <div class="bar" id="bar"></div>
+      </div>
 
-    <div class="note" id="note">
-      (Interdiction de tricher. Oui, je te surveille 👀)
+      <div class="q" id="q"></div>
+      <div class="choices" id="choices"></div>
+
+      <div class="note" id="note">—</div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
-  // ✅ Personnalise ici si tu veux
-  const herName = "Mon amour"; // mets son prénom si tu veux
-  const yourName = "Hamza";    // mets ton prénom si tu veux
+  // Personnalisation
+  const herName = "Anna";
+  const yourName = "Hamza";
+  const robotName = "Rose";
 
-  // ✅ TES 5 QUESTIONS (QCM)
+  // Questions (QCM)
   const quiz = [
     {
       question: "Quelle année on s’est rencontrés ?",
-      choices: ["2022", "2023", "2024 ✅", "2025"],
+      choices: ["2022", "2023", "2024", "2025"],
       answer: 2,
-      fun: "Ok… ça commence TRÈS bien 😌"
+      fun: "Ok. Démarrage parfait."
     },
     {
       question: "La première chose que je t’ai offerte, c’était…",
-      choices: ["Un bouquet de roses", "Un bracelet", "Une dame de cœur ❤️", "Un parfum"],
+      choices: ["Un bouquet de roses", "Un bracelet", "Une dame de cœur", "Un parfum"],
       answer: 2,
-      fun: "Voilà. C’était écrit 😌"
+      fun: "Cette info est classée “très précieuse”."
     },
     {
       question: "Notre date le plus insolite, c’était où ?",
-      choices: ["Bowling", "Bar à chats 🐾", "Escape game", "Aquarium"],
+      choices: ["Bowling", "Bar à chats", "Escape game", "Aquarium"],
       answer: 1,
-      fun: "Les chats confirment : t’es validée ✅"
+      fun: "Les chats ont approuvé."
     },
     {
       question: "Nos premières vacances ensemble :",
-      choices: ["Crète", "Malte", "Chypre ☀️", "Sardaigne"],
+      choices: ["Crète", "Malte", "Chypre", "Sardaigne"],
       answer: 2,
-      fun: "Chypre = souvenir débloqué 💭"
+      fun: "Souvenir validé."
     },
     {
       question: "Comment s’appellent mes parents ?",
-      choices: ["Ismaël & Khadija", "Smail & Khadija ✅", "Smail & Karima", "Sofiane & Khadija"],
+      choices: ["Ismaël et Khadija", "Smail et Khadija", "Smail et Karima", "Sofiane et Khadija"],
       answer: 1,
-      fun: "Celle-là… c’est la question dossier 😭"
+      fun: "Ok. Là tu m’impressionnes."
     }
   ];
 
+  // Énigmes entre les questions (toutes ont une seule bonne réponse)
+  const riddles = [
+    {
+      title: "Énigme express",
+      text: "Je suis à toi sans être à toi. Plus tu me gardes, plus je grandis. Qui suis-je ?",
+      choices: ["Un secret", "Une clé", "Un cadeau", "Une ombre"],
+      answer: 0,
+      hint: "Indice : on ne peut pas vraiment l’échanger."
+    },
+    {
+      title: "Micro-énigme",
+      text: "Je commence la nuit et je finis le matin. Qui suis-je ?",
+      choices: ["Le rêve", "Le sommeil", "Le mot 'nuit'", "La lune"],
+      answer: 2,
+      hint: "Indice : c’est une question de lettres."
+    },
+    {
+      title: "Énigme douce",
+      text: "Je suis plus fort que l’acier, mais je fond dans un regard. Qui suis-je ?",
+      choices: ["La glace", "Le courage", "Le cœur", "Le chocolat"],
+      answer: 2,
+      hint: "Indice : c’est littéralement le thème ici."
+    },
+    {
+      title: "Énigme mini",
+      text: "Plus j’avance, moins tu me vois. Qui suis-je ?",
+      choices: ["Le futur", "Le temps", "Le brouillard", "Le soleil"],
+      answer: 1,
+      hint: "Indice : tu ne peux pas l’arrêter."
+    }
+  ];
+
+  // Mode d’écran
+  // "intro" -> "question" -> "riddle" -> ... -> "final"
+  let mode = "intro";
   let i = 0;
   let score = 0;
 
   const el = (id) => document.getElementById(id);
+  const stage = el("stage");
+  const card = el("card");
+  const plushWrap = el("plushWrap");
   const title = el("title");
   const subtitle = el("subtitle");
   const q = el("q");
@@ -262,119 +700,273 @@
   const pill = el("pill");
   const scorePill = el("scorePill");
   const bar = el("bar");
+  const note = el("note");
   const toast = el("toast");
 
   function showToast(msg){
     toast.textContent = msg;
     toast.classList.add("show");
-    setTimeout(()=>toast.classList.remove("show"), 1600);
+    setTimeout(()=>toast.classList.remove("show"), 1200);
   }
 
   function render(){
-    pill.textContent = `Question ${Math.min(i+1, quiz.length)} / ${quiz.length}`;
     scorePill.textContent = `Score : ${score}`;
-    bar.style.width = `${(i / quiz.length) * 100}%`;
 
-    if(i < quiz.length){
+    if(mode === "intro"){
+      pill.textContent = "Bienvenue";
+      bar.style.width = "0%";
+      title.textContent = `Hey ${herName}.`;
+      subtitle.textContent =
+        `${yourName} m’a demandé de t’inviter à participer à ce quiz. ` +
+        `Je suis ${robotName}, un robot (presque) spécialisé en émotions humaines. ` +
+        `Je détecte notamment : sourire, surprise, et “oui” prononcé intérieurement.`;
+      q.textContent = "Règles : tu cliques, tu réponds. Et surtout… tu ne paniques pas.";
+      choices.innerHTML = `
+        <button class="primary" id="startBtn">Commencer</button>
+        <button class="btn" id="testBtn">Tester mon radar à amour</button>
+      `;
+      note.textContent = "Tout est simple. Et tout est sous contrôle. (Enfin… presque.)";
+
+      document.getElementById("startBtn").onclick = () => {
+        showToast("Analyse en cours…");
+        mode = "question";
+        render();
+      };
+      document.getElementById("testBtn").onclick = () => {
+        showToast("Radar : niveau “dangereusement mignon” détecté.");
+      };
+      return;
+    }
+
+    if(mode === "question"){
+      pill.textContent = `Question ${i+1} / ${quiz.length}`;
+      bar.style.width = `${(i / quiz.length) * 100}%`;
+
       title.textContent = `Question ${i+1}`;
-      subtitle.textContent = `${herName}, concentre-toi… c’est important 😌`;
+      subtitle.textContent = `${robotName} : je te regarde cliquer.`;
       q.textContent = quiz[i].question;
-      choices.innerHTML = "";
 
+      choices.innerHTML = "";
       quiz[i].choices.forEach((c, idx) => {
         const b = document.createElement("button");
         b.className = "btn";
         b.textContent = c;
-        b.onclick = () => answer(idx);
+        b.onclick = () => answerQuestion(idx);
         choices.appendChild(b);
       });
-    } else {
+
+      note.textContent = "Pas besoin d’écrire. Juste cliquer.";
+      return;
+    }
+
+    if(mode === "riddle"){
+      const r = riddles[i-1]; // énigme après la question i-1
+      pill.textContent = `Interlude ${i} / ${quiz.length-1}`;
+      bar.style.width = `${(i / quiz.length) * 100}%`;
+
+      title.textContent = "Interlude";
+      subtitle.textContent = `${robotName} : petite énigme (promis, ultra simple).`;
+      q.textContent = "";
+
+      choices.innerHTML = `
+        <div class="riddle">
+          <div class="riddleBox">
+            <div class="riddleTitle">${r.title}</div>
+            <p class="riddleText">${r.text}</p>
+            <div class="riddleHint">${r.hint}</div>
+          </div>
+        </div>
+      `;
+
+      const grid = document.createElement("div");
+      grid.className = "choices";
+      r.choices.forEach((c, idx) => {
+        const b = document.createElement("button");
+        b.className = "btn";
+        b.textContent = c;
+        b.onclick = () => answerRiddle(idx);
+        grid.appendChild(b);
+      });
+      choices.appendChild(grid);
+
+      note.textContent = "Objectif : débloquer la prochaine question.";
+      return;
+    }
+
+    if(mode === "final"){
       showFinal();
+      return;
     }
   }
 
-  function answer(idx){
+  function answerQuestion(idx){
     const current = quiz[i];
     if(idx === current.answer){
       score++;
-      showToast("✅ Bonne réponse !");
+      showToast("Bonne réponse.");
     } else {
-      showToast("😅 Mauvaise… mais je t’aime quand même.");
+      showToast("Non… mais ça va.");
     }
     showToast(current.fun);
 
     i++;
-    render();
+
+    // Après chaque question 1..4 -> énigme
+    if(i < quiz.length){
+      mode = "riddle";
+      render();
+    } else {
+      mode = "final";
+      render();
+    }
+  }
+
+  function answerRiddle(idx){
+    const r = riddles[i-1];
+    if(idx === r.answer){
+      showToast("Énigme validée.");
+      mode = "question";
+      render();
+    } else {
+      showToast("Presque… réessaie.");
+    }
   }
 
   function showFinal(){
     bar.style.width = "100%";
-    title.textContent = "Niveau final débloqué 💝";
-    subtitle.textContent = `Score final : ${score}/${quiz.length}. Maintenant, la vraie question…`;
+    pill.textContent = "Final";
+    title.textContent = "…";
+    subtitle.textContent = "";
+    q.textContent = "";
+    note.textContent = "";
 
-    q.textContent = `✨ ${herName}… veux-tu être ma Valentine ? ✨`;
     choices.innerHTML = "";
-
-    const final = document.createElement("div");
-    final.className = "final-area";
-    final.innerHTML = `
-      <div style="font-weight:700; font-size:16px; text-align:center;">
-        Attention : le bouton “Non” est un peu… lâche aujourd’hui.
-      </div>
-      <div class="final-buttons">
-        <button class="yes" id="yesBtn">OUI 💘</button>
-        <button class="no" id="noBtn">NON 🙅‍♀️</button>
-      </div>
-      <div class="note" style="margin:0;text-align:center;">
-        (Tu peux essayer “Non”… mais il court très vite 🏃‍♂️💨)
+    const wrap = document.createElement("div");
+    wrap.className = "finalWrap";
+    wrap.innerHTML = `
+      <h2 class="bigAsk">VEUX-TU ÊTRE<br>MA VALENTINE ?</h2>
+      <div class="finalButtons">
+        <button class="yes" id="yesBtn">OUI</button>
+        <button class="no" id="noBtn">NON</button>
       </div>
     `;
-    choices.appendChild(final);
+    choices.appendChild(wrap);
 
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
 
-    yesBtn.onclick = () => {
-      title.textContent = "AAAAAA OUIIIII 😭💘";
-      subtitle.textContent = `Ok c’est officiel. ${yourName} est l’être humain le plus heureux.`;
-      q.textContent = "📸 Screenshot obligatoire + câlin immédiat.";
-      choices.innerHTML = `
-        <button class="primary" onclick="location.reload()">Rejouer (pour le plaisir) 🔁</button>
-      `;
-      showToast("💞 Mission accomplie.");
-    };
+    yesBtn.onclick = () => showCelebration();
 
-    // Le "NON" qui fuit la souris
-    const area = final;
-
+    // NON qui fuit (sobre)
     function moveNo(){
-      const rect = area.getBoundingClientRect();
-      const pad = 18;
+      const rect = wrap.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+      const pad = 14;
 
-      const x = pad + Math.random() * (rect.width - 2*pad);
-      const y = pad + Math.random() * (rect.height - 2*pad);
+      const areaW = rect.width;
+      const areaH = rect.height;
 
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
-      noBtn.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*10-5).toFixed(1)}deg)`;
+      const x = pad + Math.random() * (areaW - btnRect.width - 2*pad);
+      const y = rect.top + 120 + Math.random() * (Math.max(120, areaH - 170));
+
+      noBtn.style.position = "fixed";
+      noBtn.style.left = `${rect.left + x}px`;
+      noBtn.style.top  = `${y}px`;
     }
 
-    noBtn.addEventListener("mouseenter", () => {
-      showToast("😳 Non : *panique*");
-      moveNo();
-    });
-
-    // Si elle arrive à cliquer quand même
+    wrap.style.position = "relative";
+    noBtn.style.position = "fixed";
+    noBtn.addEventListener("mouseenter", () => moveNo());
     noBtn.onclick = () => {
-      showToast("Erreur 418 : impossible de refuser 😇");
-      noBtn.textContent = "OK… OUI 😳💘";
+      showToast("Non indisponible.");
+      noBtn.textContent = "OK";
       noBtn.classList.add("primary");
       noBtn.onclick = () => yesBtn.click();
     };
-
-    moveNo();
+    setTimeout(moveNo, 60);
   }
 
+  function showCelebration(){
+    pill.textContent = "✅";
+    title.textContent = "";
+    subtitle.textContent = "";
+    q.textContent = "";
+    note.textContent = "";
+    bar.style.width = "100%";
+
+    choices.innerHTML = `
+      <div class="celebrate">
+        <div class="heartText">MA VALENTINE</div>
+        <h2 class="finalTitle">VEUX-TU ÊTRE<br>MA VALENTINE ?</h2>
+        <p class="finalSub">${robotName} : j’ai analysé tes émotions. Verdict : OUI confirmé à 99,9%.</p>
+
+        <div class="scene3d" aria-hidden="true">
+          <div class="rig">
+            <div class="flower3d">
+              <div class="head">
+                <span class="petal"></span><span class="petal"></span><span class="petal"></span><span class="petal"></span>
+                <span class="petal"></span><span class="petal"></span><span class="petal"></span><span class="petal"></span>
+                <div class="center"></div>
+              </div>
+              <div class="stem"></div>
+              <div class="leaf l1"></div>
+              <div class="leaf l2"></div>
+            </div>
+
+            <div class="choco3d">
+              <div class="bar"></div>
+              <div class="wrap"></div>
+              <div class="grid">
+                <div class="sq"></div><div class="sq"></div><div class="sq"></div>
+                <div class="sq"></div><div class="sq"></div><div class="sq"></div>
+              </div>
+            </div>
+
+            <div class="heart3d">
+              <div class="depth"></div>
+              <div class="core"></div>
+            </div>
+
+            <span class="spark" style="left:12%; top:18%; animation-delay:.1s"></span>
+            <span class="spark" style="left:26%; top:8%;  animation-delay:.7s"></span>
+            <span class="spark" style="left:54%; top:14%; animation-delay:.3s"></span>
+            <span class="spark" style="left:74%; top:10%; animation-delay:.9s"></span>
+            <span class="spark" style="left:88%; top:22%; animation-delay:.5s"></span>
+          </div>
+        </div>
+
+        <button class="primary" onclick="location.reload()">Rejouer</button>
+      </div>
+    `;
+
+    showToast("C’est officiel.");
+  }
+
+  // Effet 3D / parallax (carte + peluche)
+  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+  stage.addEventListener("mousemove", (e) => {
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width;
+    const py = (e.clientY - r.top) / r.height;
+
+    const rx = clamp((0.5 - py) * 10, -8, 8);
+    const ry = clamp((px - 0.5) * 12, -10, 10);
+
+    card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    card.style.setProperty("--mx", `${px*100}%`);
+    card.style.setProperty("--my", `${py*100}%`);
+
+    plushWrap.style.transform =
+      `translate3d(${(px-0.5)*10}px, ${(py-0.5)*10}px, 0) rotateY(${ry*0.6}deg) rotateX(${rx*0.6}deg)`;
+  });
+
+  stage.addEventListener("mouseleave", () => {
+    card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+    plushWrap.style.transform = `translate3d(0,0,0) rotateX(0deg) rotateY(0deg)`;
+  });
+
+  // Start
   render();
 </script>
 </body>
