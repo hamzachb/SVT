@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Saint-Valentin 💘</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffffcc;
+      --text:#1f1f1f;
+      --accent:#ff3b6b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at 20% 10%, var(--bg1), var(--bg2));
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      overflow:hidden;
+    }
+    .hearts{
+      position:fixed; inset:0; pointer-events:none; opacity:.25;
+      background-image:
+        radial-gradient(circle at 10% 20%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 30%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 30% 80%, #fff 0 2px, transparent 3px),
+        radial-gradient(circle at 90% 70%, #fff 0 2px, transparent 3px);
+      filter: blur(.2px);
+      animation: float 6s ease-in-out infinite alternate;
+    }
+    @keyframes float{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+
+    .card{
+      width:min(720px, 100%);
+      background:var(--card);
+      border:1px solid #ffffff80;
+      border-radius:22px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.15);
+      padding:28px;
+      backdrop-filter: blur(8px);
+      position:relative;
+    }
+    .title{
+      font-size: clamp(26px, 3.4vw, 40px);
+      margin:0 0 8px;
+      letter-spacing:-.5px;
+    }
+    .subtitle{
+      margin:0 0 18px;
+      font-size: clamp(14px, 2vw, 18px);
+      opacity:.85;
+      line-height:1.4;
+    }
+    .progress{
+      height:10px;
+      background:#ffffff80;
+      border-radius:999px;
+      overflow:hidden;
+      margin: 10px 0 22px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), #ffb3c7);
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .q{
+      font-size: clamp(18px, 2.4vw, 24px);
+      margin: 10px 0 18px;
+      line-height:1.25;
+    }
+    .choices{
+      display:grid;
+      gap:12px;
+      grid-template-columns: 1fr;
+      margin-bottom: 18px;
+    }
+    button{
+      border:0;
+      border-radius:14px;
+      padding:14px 16px;
+      font-size:16px;
+      cursor:pointer;
+      transition: transform .08s ease, filter .2s ease;
+    }
+    button:active{transform: scale(.98)}
+    .btn{
+      background:#fff;
+      border:1px solid #00000010;
+      text-align:left;
+    }
+    .btn:hover{filter:brightness(.98)}
+    .primary{
+      background: var(--accent);
+      color:white;
+      font-weight:700;
+      text-align:center;
+    }
+    .row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .pill{
+      background:#ffffff90;
+      border:1px solid #00000010;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:.9;
+    }
+    .note{
+      font-size:13px;
+      opacity:.75;
+      margin-top:10px;
+      line-height:1.35;
+    }
+    .final-area{
+      position:relative;
+      height:170px;
+      margin-top:10px;
+      border-radius:18px;
+      background:#ffffff70;
+      border:1px dashed #ffffffcc;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:14px;
+      padding:16px;
+    }
+    .final-buttons{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      justify-content:center;
+      width:100%;
+    }
+    .yes{
+      min-width: 190px;
+      background: linear-gradient(90deg, #ff3b6b, #ff7aa2);
+      color:white;
+      font-weight:800;
+    }
+    .no{
+      min-width: 190px;
+      background:#fff;
+      border:1px solid #00000012;
+      font-weight:700;
+      position:absolute;
+      left: 60%;
+      top: 55%;
+      transform: translate(-50%,-50%);
+      user-select:none;
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:20px;
+      transform:translateX(-50%);
+      background:#111;
+      color:#fff;
+      padding:12px 14px;
+      border-radius:999px;
+      font-size:14px;
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-6px);
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts"></div>
+
+  <div class="card" id="card">
+    <h1 class="title" id="title">Mini jeu de couple 💘</h1>
+    <p class="subtitle" id="subtitle">
+      J’ai préparé 5 questions sur nous. Si tu fais un bon score… tu débloques la vraie surprise 😇
+    </p>
+
+    <div class="row">
+      <div class="pill" id="pill">Question 1 / 5</div>
+      <div class="pill" id="scorePill">Score : 0</div>
+    </div>
+
+    <div class="progress" aria-label="progression">
+      <div class="bar" id="bar"></div>
+    </div>
+
+    <div class="q" id="q"></div>
+    <div class="choices" id="choices"></div>
+
+    <div class="note" id="note">
+      (Interdiction de tricher. Oui, je te surveille 👀)
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  // ✅ Personnalise ici si tu veux
+  const herName = "Mon amour"; // mets son prénom si tu veux
+  const yourName = "Hamza";    // mets ton prénom si tu veux
+
+  // ✅ TES 5 QUESTIONS (QCM)
+  const quiz = [
+    {
+      question: "Quelle année on s’est rencontrés ?",
+      choices: ["2022", "2023", "2024 ✅", "2025"],
+      answer: 2,
+      fun: "Ok… ça commence TRÈS bien 😌"
+    },
+    {
+      question: "La première chose que je t’ai offerte, c’était…",
+      choices: ["Un bouquet de roses", "Un bracelet", "Une dame de cœur ❤️", "Un parfum"],
+      answer: 2,
+      fun: "Voilà. C’était écrit 😌"
+    },
+    {
+      question: "Notre date le plus insolite, c’était où ?",
+      choices: ["Bowling", "Bar à chats 🐾", "Escape game", "Aquarium"],
+      answer: 1,
+      fun: "Les chats confirment : t’es validée ✅"
+    },
+    {
+      question: "Nos premières vacances ensemble :",
+      choices: ["Crète", "Malte", "Chypre ☀️", "Sardaigne"],
+      answer: 2,
+      fun: "Chypre = souvenir débloqué 💭"
+    },
+    {
+      question: "Comment s’appellent mes parents ?",
+      choices: ["Ismaël & Khadija", "Smail & Khadija ✅", "Smail & Karima", "Sofiane & Khadija"],
+      answer: 1,
+      fun: "Celle-là… c’est la question dossier 😭"
+    }
+  ];
+
+  let i = 0;
+  let score = 0;
+
+  const el = (id) => document.getElementById(id);
+  const title = el("title");
+  const subtitle = el("subtitle");
+  const q = el("q");
+  const choices = el("choices");
+  const pill = el("pill");
+  const scorePill = el("scorePill");
+  const bar = el("bar");
+  const toast = el("toast");
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"), 1600);
+  }
+
+  function render(){
+    pill.textContent = `Question ${Math.min(i+1, quiz.length)} / ${quiz.length}`;
+    scorePill.textContent = `Score : ${score}`;
+    bar.style.width = `${(i / quiz.length) * 100}%`;
+
+    if(i < quiz.length){
+      title.textContent = `Question ${i+1}`;
+      subtitle.textContent = `${herName}, concentre-toi… c’est important 😌`;
+      q.textContent = quiz[i].question;
+      choices.innerHTML = "";
+
+      quiz[i].choices.forEach((c, idx) => {
+        const b = document.createElement("button");
+        b.className = "btn";
+        b.textContent = c;
+        b.onclick = () => answer(idx);
+        choices.appendChild(b);
+      });
+    } else {
+      showFinal();
+    }
+  }
+
+  function answer(idx){
+    const current = quiz[i];
+    if(idx === current.answer){
+      score++;
+      showToast("✅ Bonne réponse !");
+    } else {
+      showToast("😅 Mauvaise… mais je t’aime quand même.");
+    }
+    showToast(current.fun);
+
+    i++;
+    render();
+  }
+
+  function showFinal(){
+    bar.style.width = "100%";
+    title.textContent = "Niveau final débloqué 💝";
+    subtitle.textContent = `Score final : ${score}/${quiz.length}. Maintenant, la vraie question…`;
+
+    q.textContent = `✨ ${herName}… veux-tu être ma Valentine ? ✨`;
+    choices.innerHTML = "";
+
+    const final = document.createElement("div");
+    final.className = "final-area";
+    final.innerHTML = `
+      <div style="font-weight:700; font-size:16px; text-align:center;">
+        Attention : le bouton “Non” est un peu… lâche aujourd’hui.
+      </div>
+      <div class="final-buttons">
+        <button class="yes" id="yesBtn">OUI 💘</button>
+        <button class="no" id="noBtn">NON 🙅‍♀️</button>
+      </div>
+      <div class="note" style="margin:0;text-align:center;">
+        (Tu peux essayer “Non”… mais il court très vite 🏃‍♂️💨)
+      </div>
+    `;
+    choices.appendChild(final);
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+
+    yesBtn.onclick = () => {
+      title.textContent = "AAAAAA OUIIIII 😭💘";
+      subtitle.textContent = `Ok c’est officiel. ${yourName} est l’être humain le plus heureux.`;
+      q.textContent = "📸 Screenshot obligatoire + câlin immédiat.";
+      choices.innerHTML = `
+        <button class="primary" onclick="location.reload()">Rejouer (pour le plaisir) 🔁</button>
+      `;
+      showToast("💞 Mission accomplie.");
+    };
+
+    // Le "NON" qui fuit la souris
+    const area = final;
+
+    function moveNo(){
+      const rect = area.getBoundingClientRect();
+      const pad = 18;
+
+      const x = pad + Math.random() * (rect.width - 2*pad);
+      const y = pad + Math.random() * (rect.height - 2*pad);
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+      noBtn.style.transform = `translate(-50%,-50%) rotate(${(Math.random()*10-5).toFixed(1)}deg)`;
+    }
+
+    noBtn.addEventListener("mouseenter", () => {
+      showToast("😳 Non : *panique*");
+      moveNo();
+    });
+
+    // Si elle arrive à cliquer quand même
+    noBtn.onclick = () => {
+      showToast("Erreur 418 : impossible de refuser 😇");
+      noBtn.textContent = "OK… OUI 😳💘";
+      noBtn.classList.add("primary");
+      noBtn.onclick = () => yesBtn.click();
+    };
+
+    moveNo();
+  }
+
+  render();
+</script>
+</body>
+</html>
